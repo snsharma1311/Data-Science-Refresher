@@ -58,7 +58,7 @@ selling_cost = as.numeric(readline('Enter selling cost: '))
 actual_cost  = as.numeric(readline('Enter actual cost: '))
 
 if (selling_cost > actual_cost) {
-  print(sprintf('You have made profif of %.2f', selling_cost - actual_cost))
+  print(sprintf('You have made profit of %.2f', selling_cost - actual_cost))
 } else if (selling_cost < actual_cost) {
   print(sprintf('You have made loss of %.2f', actual_cost - selling_cost))
 } else {
