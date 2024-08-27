@@ -1,0 +1,141 @@
+Refresher Course on Data Science
+Assignment - 4
+
+1. Create a database named college.
+Create a table name student in college database with following structure
+roll,name,class,marks,age with respective datatypes.
+◦ Insert at least 5 rows in the table.
+◦ Delete the entry of roll number 4
+◦ Update the marks of roll number 3
+◦ Give additional grace marks of 0.5 to all students.
+◦ Truncate the table
+◦ Insert the data again using multi-insert statement.
+
+Solution:
+create database college;
+use college;
+create table student (
+	roll tinyint,
+	name varchar(20),
+	class varchar(2),
+	marks float,
+	age tinyint );
+insert into student (roll, name, class, marks, age) values (1, 'Amit', 'FY', 45.67, 19);
+insert into student (roll, name, class, marks, age) values (2, 'Ajay', 'SY', 55.67, 20);
+insert into student (roll, name, class, marks, age) values (3, 'Jane', 'TY', 65.67, 21);
+insert into student (roll, name, class, marks, age) values (4, 'John', 'FY', 75.67, 19);
+insert into student (roll, name, class, marks, age) values (5, 'Vijay', 'SY', 85.67, 20);
+delete from student where roll = 4;
+update student set marks = 70 where roll = 3;
+update student set marks = marks + 0.5;
+truncate table student;
+insert into student (roll, name, class, marks, age) values 
+	(1, 'Amit', 'FY', 45.67, 19),
+	(2, 'Ajay', 'SY', 55.67, 20),
+	(3, 'Jane', 'TY', 65.67, 21),
+	(4, 'John', 'FY', 75.67, 19),
+	(5, 'Vijay', 'SY', 85.67, 20);
+
+
+2. Apply the following MySQL clause to this table.
+◦ Creating, Altering, Dropping Constraints
+◦ Aggregate Functions: SUM(), AVG(), COUNT(), MAX(), MIN(), COUNT(), Group By, Having
+Clause
+◦ Using Like, Distinct, Order By, Between...And
+◦ Comparing Nulls, Using IN/Not-In
+
+Solution:
+create view fy_student as select roll, name, marks, age from student where class = 'FY';
+alter table student add constraint primary key (roll);
+alter table student drop constraint primary key;
+select sum(marks), avg(marks), max(marks), min(marks) from student;
+select count(roll) as total_student, class from student group by class having count(roll) > 1;
+select * from student where name like 'A%';
+select distinct(class) from student;
+select * from student order by marks desc;
+select * from student where marks between 50 and 70;
+select * from student where roll in (2,4,5);
+update student set age = null where class = 'SY';
+select * from student where age is null;
+update student set age = 20 where class = 'SY';
+
+
+3. Check the table below and solve the queries.
++-------------+------------+-----------+----------+--------------+-------------+
+| Employee_id | First_name | Last_name | Salary   | Joining_date | Departement |
++-------------+------------+-----------+----------+--------------+-------------+
+| 1           | Bob        | Kinto     | 1000000  | 2019-01-20   | Finance     |
+| 2           | Jerry      | Kansxo    | 6000000  | 2019-01-15   | IT          |
+| 3           | Philip     | Jose      | 8900000  | 2019-02-05   | Banking     |
+| 4           | John       | Abraham   | 2000000  | 2019-02-25   | Insurance   |
+| 5           | Michael    | Mathew    | 2200000  | 2019-02-28   | Finance     |
+| 6           | Alex       | chreketo  | 4000000  | 2019-05-10   | IT          |
+| 7           | Yohan      | Soso      | 1230000  | 2019-06-20   | Banking     |
++-------------+------------+-----------+----------+--------------+-------------+
+
+Solution:
+create table employee (
+	Employee_id tinyint,
+	First_name varchar(20),
+	Last_name varchar(20),
+	Salary float,
+	Joining_date date,
+	Departement varchar(20) );
+
+insert into employee values
+	(1, 'Bob', 'Kinto', 1000000, '2019-01-20', 'Finance'),
+	(2, 'Jerry', 'Kansxo', 6000000, '2019-01-15', 'IT'),
+	(3, 'Philip', 'Jose', 8900000, '2019-02-05', 'Banking'),
+	(4, 'John', 'Abraham', 2000000, '2019-02-25', 'Insurance'),
+	(5, 'Michael', 'Mathew', 2200000, '2019-02-28', 'Finance'),
+	(6, 'Alex', 'chreketo', 4000000, '2019-05-10', 'IT'),
+	(7, 'Yohan', 'Soso', 1230000, '2019-06-20', 'Banking');
+
+Basic Queries:
+• Q1: Retrieve the First_name and Last_name of all employees.
+Solution:
+select First_name, Last_name from employee;
+
+• Q2: Find the total number of employees in the IT department.
+Solution: select count(Employee_id) as total_emp_it_dept from employee where Departement = 'IT';
+
+• Q3: List the details of employees who joined after 2019-02-01.
+Solution: select * from employee where Joining_date > '2019-02-01';
+
+
+Aggregation and Grouping:
+• Q4: What is the average salary of employees in the Finance department?
+Solution: select avg(Salary) as avg_salary_finance_dept from employee where Departement = 'Finance';
+
+• Q5: Find the maximum salary in the Banking department.
+Solution: select max(Salary) as max_salary_banking_dept from employee where Departement = 'Banking';
+
+• Q6: Calculate the total salary paid to employees in each department.
+Solution: select sum(Salary) as total_salary_by_dept, Departement from employee group by Departement;
+
+
+Filtering and Sorting:
+• Q7: Retrieve the employee(s) with the highest salary.
+Solution: select * from employee where Salary = (select max(Salary) from employee);
+
+• Q8: List all employees with a salary greater than 3000000, ordered by Joining_date.
+Solution: select * from employee where Salary > 3000000 order by Joining_date;
+
+• Q9: Retrieve the details of employees whose Last_name starts with 'K'.
+Solution: select * from employee where Last_name like 'K%';
+
+
+Subqueries and Joins (if there are other tables):
+• Q14: Find the second highest salary in the company.
+Solution: select Salary from employee where Employee_id not in (select Employee_id from employee where Salary = (select max(Salary) from employee)) order by Salary desc limit 1; 
+
+• Q15: List employees who earn more than the average salary of the entire company.
+Solution: select * from employee where Salary > (select avg(Salary) from employee);
+
+
+Updating and Deleting Records:
+• Q16: Update the salary of employees in the Insurance department by a 10% increase.
+Solution: update employee set Salary = 1.1 * Salary where Departement = 'Insurance';
+
+• Q17: Delete records of employees who joined before 2019-02-01.
+Solution: delete from employee where Joining_date < '2019-02-01';
